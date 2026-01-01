@@ -1,0 +1,73 @@
+# ================================
+# Python
+# ================================
+__pycache__/
+src/__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg-info/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+README
+uv.lock
+
+# ================================
+# PyTorch / ML artifacts
+# ================================
+# Model checkpoints
+*.pt
+*.pth
+
+# Training logs and outputs
+artifacts/
+data/
+runs/
+
+# ================================
+# Plots and figures
+# ================================
+#*.png
+*.jpg
+*.jpeg
+*.svg
+*.pdf
+
+# ================================
+# OS / Editor files
+# ================================
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# JetBrains
+.idea/
+
+# ================================
+# Temporary / scratch files
+# ================================
+*.log
+*.tmp
+*.swp
+*.bak
+
+# ================================
+# Jupyter
+# ================================
+.ipynb_checkpoints/
+
+# ================================
+# Optional: keep selected models
+# ================================
+# Uncomment if you want to version checkpoints via Git LFS
+# !models/*.pt
+
