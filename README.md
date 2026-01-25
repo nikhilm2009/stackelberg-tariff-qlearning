@@ -1,171 +1,124 @@
-# Stackelberg Tariff Game with Q-Learning
+# Stackelberg Tariff Games with Reinforcement Learning
 
-This repository implements a **two-player Stackelberg tariff–currency game** combining a stylized economic payoff model with **tabular Q-learning**. The framework is designed to study **adaptive dynamics in trade conflicts**, where one country sets tariffs and the other responds with currency depreciation.
+This repository explores **leader–follower (Stackelberg) interactions** using reinforcement learning, progressing from **toy strategic games** to a **structured economic model of tariffs and currency responses**.  
+The codebase is intentionally modular, with each stage of the project documented in its own README.
 
-The project focuses on interpretability, economic intuition, and diagnostic clarity rather than deep neural networks.
-
----
-
-## Overview
-
-We model a repeated interaction between:
-
-- **Leader (e.g., United States)**  
-  Chooses a tariff rate τ on imports.
-
-- **Follower (e.g., China or India)**  
-  Responds by choosing a currency depreciation level d.
-
-The leader moves first (Stackelberg timing), and the follower reacts after observing the tariff. Both agents may either:
-- Follow a **best-response (BR)** rule derived from the payoff model, or
-- Learn adaptively using **tabular Q-learning** with discretized action spaces.
+The goal is to study how **learning, memory, and coordination** alter strategic outcomes in trade-style conflicts.
 
 ---
 
-## Economic Model
+## How to Navigate This Repository
 
-## Trade Dynamics
+The project is organized chronologically. Each README corresponds to a distinct modeling stage and research question.
 
-Imports and exports evolve through partial adjustment:
+### 1. Baseline: Learning in Simple Strategic Games  
+📄 **`README_SimplePayoff.md`**
 
-- **Imports (leader)**  
-  M_{t+1} = M_t · (1 − κ · τ_t · demand_elast)
+**What it covers**
+- Single leader and single follower  
+- Abstract, toy payoffs (no macroeconomics)  
+- Tabular Q-learning and Q3 (short-history states)  
+- Symmetric action sets (e.g., cooperate vs retaliate)
 
-- **Exports (follower)**  
-  X_{t+1} = X_t · (1 + λ · d_t · supply_elast)
+**Why it exists**
+This stage isolates *learning dynamics*:
+- Can short-horizon memory support cooperation?
+- How does punishment and forgiveness emerge?
+- How do outcomes differ from static Nash equilibria?
 
-
-### Payoffs
-
-**Leader payoff**
-- Tariff revenue
-- Consumer surplus loss
-- Quadratic tariff cost
-
-**Follower payoff**
-- Export gain from depreciation
-- Inflation cost from more expensive imports
-- Quadratic depreciation cost
-
-Discounted present values are computed using a common discount factor δ.
+➡️ Start here if you want the **simplest possible Stackelberg RL setup**.
 
 ---
 
-## Reinforcement Learning Setup
+### 2. Multi-Agent Extension: Coalitions and Coordination  
+📄 **`README_MARL.md`**
 
-### Q-Learning Agents
+**What it adds**
+- One leader, **multiple followers**
+- Still toy payoffs, but richer interaction
+- Coalition logic: followers may opt in, vote, and align
+- Diagnostics for coalition formation and stability
 
-Both leader and follower can use **tabular Q-learning**:
+**Why it exists**
+This stage studies **collective behavior**:
+- When do rational coalitions form?
+- How uncertainty and learning affect coordination
+- Whether follower coalitions erode the leader’s advantage
 
-- Discrete action bins (typically 6–8 levels)
-- ε-greedy exploration
-- Standard Q-update rule:
-
-  Q(s, a) ← (1 − α) · Q(s, a)  
-     + α · [ r + γ · maxₐ′ Q(s′, a′) ]
-
-
-### State Representation
-States are intentionally compact and interpretable:
-- Last 3 actions (τ or d history)
-- Current policy level
-- Optional regime labels (e.g., low/high elasticity cases)
-
-This design enables **clear diagnostics** and avoids opaque representations.
+➡️ Read this if you’re interested in **multi-agent RL, coordination, and coalition dynamics**.
 
 ---
 
-## Files
+### 3. Economic Model: Tariffs vs Currency Depreciation  
+📄 **`README_EconPayoff.md`**
 
-### `stackelberg_q3_tariff_econ_sim.py`
-Core implementation:
-- `EconomicParams`: parameter container
-- `EconomicEnvironment`: trade flow and payoff logic
-- `Q3BinnedLeader`, `Q3BinnedFollower`: tabular Q-learning agents
-- `BestResponseFollowerEconomic`: analytical best-response baseline
-- `StackelbergTariffGameEconomic`: simulation driver
+**What it adds**
+- Explicit economic environment (imports, exports, elasticities)
+- Leader sets tariff rate τ
+- Follower responds with currency depreciation d
+- Interpretable payoff components (revenue, consumer loss, inflation, policy costs)
+- Comparison between learned policies and analytical best responses
 
-### `test_stackelberg_q3_tariff_econ.py`
-Experiment and visualization script:
-- Runs long-horizon simulations (e.g., 20,000 rounds)
-- Generates **Figures 1–5**, including:
-  - Policy time series
-  - Trade flows
-  - Payoff decompositions
-  - Q-value diagnostics vs discounted PV
-  - State-visit coverage and convergence checks
+**Why it exists**
+This stage grounds the framework in **economic realism**:
+- Links RL behavior to economic intuition
+- Enables policy-level interpretation
+- Tests whether learning converges to (or deviates from) theory
+
+➡️ Start here if you care about **economic modeling, interpretability, and diagnostics**.
 
 ---
 
-## Figures & Diagnostics
+## Conceptual Progression
 
-The framework emphasizes **debuggability and validation**:
+```
+Simple Payoffs
+   ↓
+Learning Dynamics (Q / Q3)
+   ↓
+Multi-Follower Coordination
+   ↓
+Coalitions
+   ↓
+Economic Stackelberg Model
+```
 
-- Comparison of learned Q-values vs realized discounted payoffs
-- Rolling averages to assess convergence
-- Most-visited-state heatmaps
-- Policy histograms and best-response curves
-- Coverage diagnostics to detect under-exploration or overestimation
-
-These tools help identify when learning aligns with theory—and when it does not.
-
----
-
-## Typical Use Cases
-
-- Studying **leader-favoring vs follower-favoring** trade environments
-- Comparing **best-response vs adaptive learning**
-- Demonstrating bounded rationality and path dependence
-- Educational or research-oriented simulations of trade policy dynamics
-
----
-
-## Requirements
-
-- Python 3.9+
-- NumPy
-- Matplotlib
-
-No deep learning frameworks are required.
+Each stage builds directly on the previous one, increasing realism while preserving transparency.
 
 ---
 
 ## Design Philosophy
 
-This repository prioritizes:
-- Economic transparency over black-box models
-- Clear diagnostics over raw performance
-- Reproducible experiments with fixed seeds
-- A clean baseline for future extensions (e.g., deep RL, multi-country models)
+Across all stages, the project prioritizes:
+- **Interpretability over black-box performance**
+- **Tabular RL** to expose learning mechanisms
+- **Clear diagnostics** (Q-traces, policy paths, coalition signals)
+- **Comparability** between static theory and adaptive agents
+
+Deep RL and continuous control are intentionally left out to keep behavior analyzable.
 
 ---
 
-## Future Extensions (Out of Scope Here)
+## Where to Start
 
-- Deep Q-learning or actor–critic methods
-- Continuous action spaces
-- Recurrent or attention-based state encoding
-- Multi-country or networked trade models
+- **New to the project?** → `README_SimplePayoff.md`  
+- **Interested in MARL & coalitions?** → `README_MARL.md`  
+- **Focused on economics & policy interpretation?** → `README_EconPayoff.md`
 
-These are intentionally excluded to keep the current framework focused and interpretable.
+---
+
+## Future Directions
+
+Planned or conceptual extensions include:
+- Allowing followers to choose *both* depreciation and retaliatory tariffs
+- Adding export losses explicitly to the leader payoff
+- Multi-country follower blocs
+- Deep or recurrent RL for longer-horizon memory
+
+These are intentionally separated from the current codebase to keep each stage focused.
 
 ---
 
 ## License
 
-MIT License 
-
----
-
-## Citation
-
-If you use this code in academic work, please cite as:
-
-> *Stackelberg Tariff Game with Q-Learning*,  
-> GitHub repository, YYYY.
-
----
-
-## Contact
-
-For questions or extensions, please contact the repository owner.
+MIT License
