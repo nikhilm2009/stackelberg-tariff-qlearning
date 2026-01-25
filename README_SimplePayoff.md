@@ -18,22 +18,16 @@ A compact, reproducible setup to study **leader–follower (Stackelberg)** inter
 
 ---
 
-## 2) Quick start
+## Quick start
 
-### Requirements
-- Python 3.9+
-- No heavy dependencies expected (standard library + `numpy` if used by your code).
-
-### Run a quick simulation
 ```bash
-# Option A: run the main simulation
-python stackelberg_q3_tariff_simplePayoff_sim.py
+# 1) Create a fresh env (optional)
+uv sync 
+source .venv/bin/activate
 
-# Option B: run the test / example harness
-python test_stackelberg_q3_tariff_simplePayoff.py
+# 2) Run the example
+python -s test_stackelberg_q3_tariff_econ.py
 ```
-
-Both scripts print a short summary to stdout (episode returns, cooperation rates, etc.).
 
 ---
 
@@ -122,4 +116,4 @@ If you use or extend this code in a report or poster, you can cite the project a
 
 ## 10) License
 
-MIT (or your preferred license). Update this section if you choose a different license.
+MIT 
