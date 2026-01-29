@@ -107,6 +107,39 @@ Deep RL and continuous control are intentionally left out to keep behavior analy
 
 ---
 
+## Repository Structure
+.
+├── README.md                     # Top-level overview (project roadmap & navigation)
+│
+├── README_SimplePayoff.md         # Stage 1: Single leader–follower, toy payoffs
+├── README_MARL.md                 # Stage 2: Multi-follower MARL with coalitions
+├── README_EconPayoff.md           # Stage 3: Economic Stackelberg model
+│
+├── simple_payoff/
+│   ├── stackelberg_q3_tariff_simplePayoff_sim.py
+│   ├── test_stackelberg_q3_tariff_simplePayoff.py
+│   └── plots/ 
+│
+├── marl/
+│   ├── stackelberg_q3_tariff_MultiFollower_sim.py
+│   ├── marl_q3_followers.py
+│   ├── test_multiagent_simplePayoff.py
+│   └── plots/
+│
+├── econ/
+│   ├── stackelberg_q3_tariff_econ_sim.py
+│   ├── test_stackelberg_q3_tariff_econ.py
+│   ├── plots/
+│
+│
+├── pyproject.toml
+├── .gitignore
+└── LICENSE
+
+
+
+
+
 ## Future Directions
 
 Planned or conceptual extensions include:
