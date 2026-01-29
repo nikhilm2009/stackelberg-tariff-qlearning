@@ -108,7 +108,7 @@ Deep RL and continuous control are intentionally left out to keep behavior analy
 ---
 
 ## Repository Structure
-.
+```
 ├── README.md                     # Top-level overview (project roadmap & navigation)
 │
 ├── README_SimplePayoff.md         # Stage 1: Single leader–follower, toy payoffs
@@ -131,11 +131,10 @@ Deep RL and continuous control are intentionally left out to keep behavior analy
 │   ├── test_stackelberg_q3_tariff_econ.py
 │   ├── plots/
 │
-│
 ├── pyproject.toml
 ├── .gitignore
 └── LICENSE
-
+```
 
 
 
