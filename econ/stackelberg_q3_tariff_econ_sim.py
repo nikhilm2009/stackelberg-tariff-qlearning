@@ -11,6 +11,7 @@ SIM_VERSION = "econ-sim v3 — deferred follower + (d_last, X_momentum) in follo
 # -------------------------
 @dataclass
 class EconomicParams:
+    trade_form: str = "linear"   # "linear" or "power"
     M0: float = 300.0
     X0: float = 300.0
     demand_elast: float = 1.5
@@ -38,14 +39,22 @@ class EconomicEnvironment:
         self.X = self.p.X0
         # for momentum (set/updated by orchestrator)
         self.prev_X = self.X
-
     def _M_star(self, tau: float) -> float:
-        # Import demand falls with tariffs
-        return max(0.0, self.p.M0 * (1.0 - self.p.demand_elast * tau))
+        # Import demand target under tariff
+        if getattr(self.p, "trade_form", "linear") == "power":
+            # power-form target anchored at M0 (mean-reversion still happens in _transition)
+            # NOTE: uses tau directly (not kappa), so kappa remains the *speed* parameter.
+            return max(0.0, self.p.M0 * (1.0 + tau) ** (-self.p.demand_elast))
+        else:
+            return max(0.0, self.p.M0 * (1.0 - self.p.demand_elast * tau))
 
     def _X_star(self, d: float) -> float:
-        # Exports respond to depreciation
-        return self.p.X0 * (1.0 + self.p.supply_elast * d)
+        # Export target under depreciation
+        if getattr(self.p, "trade_form", "linear") == "power":
+            return self.p.X0 * (1.0 + d) ** (self.p.supply_elast)
+        else:
+            return self.p.X0 * (1.0 + self.p.supply_elast * d)
+
 
     def _transition(self, tau: float, d: float):
         M_star = self._M_star(tau)

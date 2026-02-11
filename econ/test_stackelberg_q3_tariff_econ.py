@@ -152,40 +152,42 @@ def prepare_q_heatmap(agent, actions_sorted=None, top_k=50):
 # Configurable experiment block
 # -----------------------------
 # Leader-favoring scenario (U.S. advantage)
-def build_params(tau_max=0.35, d_max=0.25):
-    return EconomicParams(
-        M0=450.0,
-        X0=500.0,
-        demand_elast=1.10,   # ↓ sensitivity → τ hurts M less → stronger tariff revenue
-        supply_elast=0.90,   # ↓ export response to d → follower gains less
-        kappa=0.35,          # ↓ M adjusts slower → revenue persists
-        lam=0.40,            # ↓ X adjusts slower → follower gains slower
-        delta=0.98,
-        phi_inflation=0.35,  # ↑ imported-inflation penalty → discourages d
-        leader_cost_w=0.008, # ↓ softer tariff cost
-        follower_cost_w=0.010,# ↑ heavier depreciation/admin cost
-        tau_max=0.35,        # moderate tariff headroom
-        d_max=0.18           # ↓ caps follower’s depreciation
-    )
+#def build_params(tau_max=0.35, d_max=0.25, trade_form="linear"):
+#    return EconomicParams(
+#        trade_form="power",
+#        M0=450.0,
+#        X0=500.0,
+#        demand_elast=1.10,   # ↓ sensitivity → τ hurts M less → stronger tariff revenue
+#        supply_elast=0.90,   # ↓ export response to d → follower gains less
+#        kappa=0.35,          # ↓ M adjusts slower → revenue persists
+#        lam=0.40,            # ↓ X adjusts slower → follower gains slower
+#        delta=0.98,
+#        phi_inflation=0.35,  # ↑ imported-inflation penalty → discourages d
+#        leader_cost_w=0.008, # ↓ softer tariff cost
+#        follower_cost_w=0.010,# ↑ heavier depreciation/admin cost
+#        tau_max=0.35,        # moderate tariff headroom
+#        d_max=0.18           # ↓ caps follower’s depreciation
+#    )
 
 # Follower-favoring scenario (China/India advantage)
-# def build_params(tau_max=0.35, d_max=0.25):
-#     return EconomicParams(
-#         M0=450.0,
-#         X0=500.0,
-#         demand_elast=1.80,   # ↑ sensitivity → τ cuts M quickly → weakens tariff revenue
-#         supply_elast=1.90,   # ↑ strong export response to d
-#         kappa=0.60,          # ↑ M adjusts faster → revenue erodes quickly after τ
-#         lam=0.55,            # ↑ X adjusts faster → follower gains arrive quickly
-#         delta=0.98,
-#         phi_inflation=0.20,  # ↓ lower imported-inflation bite from d
-#         leader_cost_w=0.015, # ↑ higher political/admin cost to τ
-#         follower_cost_w=0.004,# ↓ cheaper to maintain depreciation
-#         tau_max=0.25,        # ↓ political/feasible cap on τ
-#         d_max=0.35           # ↑ more room to depreciate
-#     )
+def build_params(tau_max=0.35, d_max=0.25, trade_form="linear"):
+    return EconomicParams(
+        trade_form="power",
+        M0=450.0,
+        X0=500.0,
+        demand_elast=1.80,   # ↑ sensitivity → τ cuts M quickly → weakens tariff revenue
+        supply_elast=1.90,   # ↑ strong export response to d
+        kappa=0.60,          # ↑ M adjusts faster → revenue erodes quickly after τ
+        lam=0.55,            # ↑ X adjusts faster → follower gains arrive quickly
+        delta=0.98,
+        phi_inflation=0.20,  # ↓ lower imported-inflation bite from d
+        leader_cost_w=0.015, # ↑ higher political/admin cost to τ
+        follower_cost_w=0.004,# ↓ cheaper to maintain depreciation
+        tau_max=0.25,        # ↓ political/feasible cap on τ
+        d_max=0.35           # ↑ more room to depreciate
+    )
 
-# def build_params(tau_max=0.35, d_max=0.25):
+# def build_params(tau_max=0.35, d_max=0.25, trade_form="linear"):
 #     return EconomicParams(
 #         M0=450.0,
 #         X0=500.0,
@@ -206,6 +208,7 @@ def make_uniform_bins(vmin, vmax, n=6):
     return make_bins(n, vmin, vmax)
 
 def test_stackelberg_q3_tariff_econ(
+    trade_form="linear",
     steps=20000,
     tau_max=0.35,
     d_max=0.25,
@@ -218,7 +221,8 @@ def test_stackelberg_q3_tariff_econ(
     smooth_win=25,
 ):
     # --- Params & bins
-    params = build_params(tau_max=tau_max, d_max=d_max)
+    params = build_params(tau_max=tau_max, d_max=d_max, trade_form=trade_form)
+    suffix = f"_{params.trade_form}"
     tau_bins = make_uniform_bins(0.0, params.tau_max, n=n_bins)
     d_bins = make_uniform_bins(0.0, params.d_max, n=n_bins)
 
@@ -349,7 +353,7 @@ def test_stackelberg_q3_tariff_econ(
     ax.legend(lines, labels, loc="upper left", fontsize=9)
 
     plt.tight_layout()
-    plt.savefig("plots/stackelberg_q3_econ_fig1.png")
+    plt.savefig(f"plots/stackelberg_q3_econ_fig1{suffix}.png")
     plt.close(fig1)
 
     # ==========================================================
@@ -398,7 +402,7 @@ def test_stackelberg_q3_tariff_econ(
     axs2[1].grid(True); axs2[1].legend(ncol=2, fontsize=9)
 
     plt.tight_layout()
-    plt.savefig("plots/stackelberg_q3_econ_fig2_decompositions.png")
+    plt.savefig(f"plots/stackelberg_q3_econ_fig2_decompositions{suffix}.png")
     plt.close(fig2)
 
 
@@ -461,7 +465,7 @@ def test_stackelberg_q3_tariff_econ(
         axs3[1, 1].set_axis_off()
 
     plt.tight_layout()
-    plt.savefig("plots/stackelberg_q3_econ_fig3_qtables_qgaps.png")
+    plt.savefig(f"plots/stackelberg_q3_econ_fig3_qtables_qgaps{suffix}.png")
     plt.close(fig3)
     # ==========================================================
     # FIGURE 4: Policies & BR snapshot (robust)
@@ -537,7 +541,7 @@ def test_stackelberg_q3_tariff_econ(
                 # axs4[1].legend()
 
     plt.tight_layout()
-    plt.savefig("plots/stackelberg_q3_econ_fig4_policies_br.png")
+    plt.savefig(f"plots/stackelberg_q3_econ_fig4_policies_br{suffix}.png")
     plt.close(fig4)
 
 
@@ -568,7 +572,7 @@ def test_stackelberg_q3_tariff_econ(
         axs5[1].set_axis_off()
 
     plt.tight_layout()
-    plt.savefig("plots/stackelberg_q3_econ_fig5_tailpv_vs_q.png")
+    plt.savefig(f"plots/stackelberg_q3_econ_fig5_tailpv_vs_q{suffix}.png")
     plt.close(fig5)
 
     # ==========================================================
@@ -606,7 +610,7 @@ def test_stackelberg_q3_tariff_econ(
         axs6[1].set_xticks([])
 
     plt.tight_layout()
-    plt.savefig("plots/stackelberg_q3_econ_fig6_state_visits.png")
+    plt.savefig(f"plots/stackelberg_q3_econ_fig6_state_visits{suffix}.png")
     plt.close(fig6)
 
     # -----------------------------
