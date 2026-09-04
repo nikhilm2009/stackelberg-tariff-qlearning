@@ -5,9 +5,13 @@ to a published multi-agent reinforcement learning model of international trade
 conflicts. The work spans two years and three modeling stages, each building
 directly on the previous one.
 
-**Stage 3 (IEEE CIFEr 2025)** — *Regime Structure in Adaptive Tariff Conflicts:
-A Multi-Agent Reinforcement Learning Analysis* — is the current active research
+**Stage 3 (IEEE CIFEr 2026)** — *Regime Structure in Adaptive Tariff Conflicts:
+A Multi-Agent Reinforcement Learning Analysis*
+(Nikhil Muthukumar, Micah Chiang, Jeffrey Chen, and Phil Mui) — is the current active research
 thread and the most complete work in the repository.
+
+**Stage 3** was accepted to the
+[IEEE Symposium on Computational Intelligence for Financial Engineering and Economics (CIFEr) 2026](https://cifer2026.mhirano.jp/).
 
 **Stages 1 and 2** were presented at the
 [Southern California Conference for Undergraduate Research (SCCUR) 2025](https://www.sccur.org).
@@ -23,7 +27,7 @@ Stage 1 — Simple Payoffs
 Stage 2 — Multi-Agent Coordination
     One leader, multiple followers, coalition dynamics
     ↓
-Stage 3 — Economic Stackelberg Model  ← IEEE CIFEr 2025
+Stage 3 — Economic Stackelberg Model  ← IEEE CIFEr 2026
     Full trade-flow model, phase diagrams, regime structure
 ```
 
@@ -59,7 +63,7 @@ advantage under adaptive learning.
 
 ---
 
-## Stage 3 — Economic Stackelberg Model (IEEE CIFEr 2025)
+## Stage 3 — Economic Stackelberg Model (IEEE CIFEr 2026)
 📁 `econ/` &nbsp;|&nbsp; 📄 `README_EconPayoff.md`
 
 The main research contribution. Models a two-country tariff conflict as a
@@ -83,7 +87,8 @@ regimes: Deterrence, Transition, and Escalation.
   stable attractors
 
 **Published:** *Regime Structure in Adaptive Tariff Conflicts: A Multi-Agent
-Reinforcement Learning Analysis*, IEEE CIFEr 2025.
+Reinforcement Learning Analysis*,
+Nikhil Muthukumar, Micah Chiang, Jeffrey Chen, and Phil Mui. [IEEE CIFEr 2026](https://cifer2026.mhirano.jp/).
 
 *Also presented at SCCUR 2025.*
 
@@ -129,7 +134,7 @@ behavior analyzable and results reproducible.
 │   ├── test_multiagent_simplePayoff.py
 │   └── plots/
 │
-├── econ/                          # Stage 3 — IEEE CIFEr 2025
+├── econ/                          # Stage 3 — IEEE CIFEr 2026
 │   ├── stackelberg_q3_tariff_econ_sim_v10_leaderDepr.py
 │   ├── stackelberg_q3_tariff_econ_config_v10.py
 │   ├── test_stackelberg_q3_tariff_econ_v10_leaderDepr.py
