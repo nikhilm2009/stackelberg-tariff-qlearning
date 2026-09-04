@@ -70,4 +70,85 @@ runs/
 # ================================
 # Uncomment if you want to version checkpoints via Git LFS
 # !models/*.pt
+# ── Intermediate simulation versions ─────────────────────────────────────
+stackelberg_q3_tariff_econ_sim.py
+stackelberg_q3_tariff_econ_sim_v2.py
+stackelberg_q3_tariff_econ_sim_v3.py
+stackelberg_q3_tariff_econ_sim_v4.py
+stackelberg_q3_tariff_econ_sim_v6.py
+stackelberg_q3_tariff_econ_sim_v7.py
+stackelberg_q3_tariff_econ_sim_v8_exptCntl.py
+stackelberg_q3_tariff_econ_sim_v9_leaderDepr.py
+
+# ── Intermediate test/runner versions ────────────────────────────────────
+test_stackelberg_q3_tariff_econ.py
+test_stackelberg_q3_tariff_econ_v3_perturb.py
+test_stackelberg_q3_tariff_econ_v3_pert_reconv.py
+test_stackelberg_q3_tariff_econ_v3_sense.py
+test_stackelberg_v4_phaseplots.py
+test_stackelberg_q3_tariff_econ_v5_sense.py
+test_stackelberg_q3_tariff_econ_v5_phaseplot.py
+test_stackelberg_q3_tariff_econ_v6_spite.py
+test_stackelberg_q3_tariff_econ_v6_phaseplot.py
+test_stackelberg_q3_tariff_econ_v6_sense.py
+test_stackelberg_q3_tariff_econ_v7_sense.py
+test_stackelberg_q3_tariff_econ_v7_phaseplot.py
+test_stackelberg_q3_tariff_econ_v8_exptCntl*.py
+test_stackelberg_q3_tariff_econ_v9_leaderDepr.py
+test_stackelberg_q3_tariff_econ_v9_leaderDepr_PD*.py
+test_stackelberg_q3_tariff_econ_v10_leaderDepr_PD_BAK*.py
+test_stackelberg_q3_tariff_econ_v10_leaderDepr_PD.py
+v10_pd_ieee_leaderDepr_PD_bkp.py
+v10_pd_ieee_leaderDepr_PD.py
+
+# ── Abandoned analysis scripts ────────────────────────────────────────────
+stackelberg_benchmark_pd2.py
+plot_pd2_stackelberg_comparison.py
+patch_pd_runner_per_seed_csv.py
+pd2_br_probe_grid.py
+debug_pd_boundary.py
+debug_outputs/
+
+# ── Intermediate plot directories ─────────────────────────────────────────
+plots/
+plots_v3/
+plots_v3_sense/
+plots_v4/
+plots_v4_psi1p0/
+plots_v5/
+plots_v6_tau_scaled/
+plots_v6_gap_endogenous/
+plots_v7/
+plots_v7_bak/
+plots_v8_exptCntl/
+plots_v9_leaderDepr/
+plots_v10_leaderDepr/
+phase_plots_v5/
+phase_plots_v6_tau_scaled/
+phase_plots_v6_gap_endogenous/
+phase_plots_v7/
+phase_plots_v7_bak/
+phase_plots_v8_exptCntl/
+phase_plots_v9_leaderDepr/
+phase_plots_v10_leaderDepr/
+sense_plots_v6_tau_scaled/
+sense_plots_v6_gap_endogenous/
+sense_plots_v7/
+sense_plots_v8_exptCntl/
+spite_plots_v6/
+
+# ── Intermediate probe results (modal-tau version, superseded) ────────────
+pd2_br_probe_results.csv
+pd2_br_probe_results_raw.csv
+
+# ── Misc ──────────────────────────────────────────────────────────────────
+__pycache__/
+*.pyc
+references.ipynb
+TariffWarSim.py
+Tariff_War_Sim.py
+csp_ttemplate.py
+rl_stackelberg_flowchart_v4.svg
+main_v8_CR.tex
+context.md
 

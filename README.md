@@ -1,153 +1,161 @@
 # Stackelberg Tariff Games with Reinforcement Learning
 
-This repository explores **leader–follower (Stackelberg) interactions** using reinforcement learning, progressing from **toy strategic games** to a **structured economic model of tariffs and currency responses**.  
-The codebase is intentionally modular, with each stage of the project documented in its own README.
+This repository documents a research progression from simple strategic games
+to a published multi-agent reinforcement learning model of international trade
+conflicts. The work spans two years and three modeling stages, each building
+directly on the previous one.
 
-The goal is to study how **learning, memory, and coordination** alter strategic outcomes in trade-style conflicts.
+**Stage 3 (IEEE CIFEr 2025)** — *Regime Structure in Adaptive Tariff Conflicts:
+A Multi-Agent Reinforcement Learning Analysis* — is the current active research
+thread and the most complete work in the repository.
 
----
-
-## How to Navigate This Repository
-
-The project is organized chronologically. Each README corresponds to a distinct modeling stage and research question.
-
-### 1. Baseline: Learning in Simple Strategic Games  
-📄 **`README_SimplePayoff.md`**
-
-**What it covers**
-- Single leader and single follower  
-- Abstract, toy payoffs (no macroeconomics)  
-- Tabular Q-learning and Q3 (short-history states)  
-- Symmetric action sets (e.g., cooperate vs retaliate)
-
-**Why it exists**
-This stage isolates *learning dynamics*:
-- Can short-horizon memory support cooperation?
-- How does punishment and forgiveness emerge?
-- How do outcomes differ from static Nash equilibria?
-
-➡️ Start here if you want the **simplest possible Stackelberg RL setup**.
+**Stages 1 and 2** were presented at the
+[Southern California Conference for Undergraduate Research (SCCUR) 2025](https://www.sccur.org).
 
 ---
 
-### 2. Multi-Agent Extension: Coalitions and Coordination  
-📄 **`README_MARL.md`**
-
-**What it adds**
-- One leader, **multiple followers**
-- Still toy payoffs, but richer interaction
-- Coalition logic: followers may opt in, vote, and align
-- Diagnostics for coalition formation and stability
-
-**Why it exists**
-This stage studies **collective behavior**:
-- When do rational coalitions form?
-- How uncertainty and learning affect coordination
-- Whether follower coalitions erode the leader’s advantage
-
-➡️ Read this if you’re interested in **multi-agent RL, coordination, and coalition dynamics**.
-
----
-
-### 3. Economic Model: Tariffs vs Currency Depreciation  
-📄 **`README_EconPayoff.md`**
-
-**What it adds**
-- Explicit economic environment (imports, exports, elasticities)
-- Leader sets tariff rate τ
-- Follower responds with currency depreciation d
-- Interpretable payoff components (revenue, consumer loss, inflation, policy costs)
-- Comparison between learned policies and analytical best responses
-
-**Why it exists**
-This stage grounds the framework in **economic realism**:
-- Links RL behavior to economic intuition
-- Enables policy-level interpretation
-- Tests whether learning converges to (or deviates from) theory
-
-➡️ Start here if you care about **economic modeling, interpretability, and diagnostics**.
-
----
-
-## Conceptual Progression
+## Research Progression
 
 ```
-Simple Payoffs
-   ↓
-Learning Dynamics (Q / Q3)
-   ↓
-Multi-Follower Coordination
-   ↓
-Coalitions
-   ↓
-Economic Stackelberg Model
+Stage 1 — Simple Payoffs
+    Single leader–follower, abstract rewards, tabular Q-learning
+    ↓
+Stage 2 — Multi-Agent Coordination
+    One leader, multiple followers, coalition dynamics
+    ↓
+Stage 3 — Economic Stackelberg Model  ← IEEE CIFEr 2025
+    Full trade-flow model, phase diagrams, regime structure
 ```
 
-Each stage builds directly on the previous one, increasing realism while preserving transparency.
+Each stage isolates a specific research question while preserving the
+interpretability and tabular-RL foundation established at the start.
+
+---
+
+## Stage 1 — Learning in Simple Strategic Games
+📁 `simple_payoff/` &nbsp;|&nbsp; 📄 `README_SimplePayoff.md`
+
+The baseline stage studies whether short-horizon memory can support
+cooperation in a single leader–follower setting with abstract payoffs.
+Key questions: can tabular Q-learning with recent action history produce
+punishment and forgiveness? How do learned outcomes compare to static
+Nash equilibria?
+
+➡️ Start here for the **simplest possible Stackelberg RL setup**.
+
+---
+
+## Stage 2 — Multi-Agent Coordination and Coalitions
+📁 `marl/` &nbsp;|&nbsp; 📄 `README_MARL.md`
+
+Extends Stage 1 to one leader and multiple followers. Followers may form
+coalitions, vote on joint strategies, and align against the leader. Studies
+when rational coalitions form and whether they erode the leader's strategic
+advantage under adaptive learning.
+
+*Presented at SCCUR 2025.*
+
+➡️ Read this for **multi-agent RL, coordination, and coalition dynamics**.
+
+---
+
+## Stage 3 — Economic Stackelberg Model (IEEE CIFEr 2025)
+📁 `econ/` &nbsp;|&nbsp; 📄 `README_EconPayoff.md`
+
+The main research contribution. Models a two-country tariff conflict as a
+repeated Stackelberg game with an explicit economic environment: import
+demand, export supply, currency depreciation, and retaliatory tariffs, all
+governed by elasticity relationships and partial adjustment dynamics.
+
+Both agents learn via tabular Q-learning (the follower uses Double Q-learning
+to handle its larger joint action space). The central output is a suite of
+**phase diagrams** mapping structural parameters to three stable outcome
+regimes: Deterrence, Transition, and Escalation.
+
+**Key findings:**
+- The Deterrence–Escalation boundary is organized by the ratio of follower
+  retaliation capacity to leader tariff capacity
+- Leader currency depreciation has a non-monotone inverted-W effect on the
+  Deterrence region, with an interior optimum and partial recovery at higher
+  levels
+- Near regime boundaries, identical parameters produce different outcomes
+  across learning runs, revealing coordination-sensitive regions with multiple
+  stable attractors
+
+**Published:** *Regime Structure in Adaptive Tariff Conflicts: A Multi-Agent
+Reinforcement Learning Analysis*, IEEE CIFEr 2025.
+
+*Also presented at SCCUR 2025.*
+
+➡️ Start here for **economic modeling, phase diagrams, and regime structure**.
 
 ---
 
 ## Design Philosophy
 
-Across all stages, the project prioritizes:
-- **Interpretability over black-box performance**
-- **Tabular RL** to expose learning mechanisms
-- **Clear diagnostics** (Q-traces, policy paths, coalition signals)
-- **Comparability** between static theory and adaptive agents
+All three stages share the same core principles:
 
-Deep RL and continuous control are intentionally left out to keep behavior analyzable.
+- **Interpretability over performance** — tabular Q-learning keeps value
+  functions directly inspectable
+- **Explicit diagnostics** — convergence checks, best-response probes, and
+  sensitivity analyses at every stage
+- **Incremental complexity** — each stage adds one new modeling layer without
+  discarding what came before
+- **Comparability with theory** — learned policies are compared against
+  analytical benchmarks throughout
 
----
-
-## Where to Start
-
-- **New to the project?** → `README_SimplePayoff.md`  
-- **Interested in MARL & coalitions?** → `README_MARL.md`  
-- **Focused on economics & policy interpretation?** → `README_EconPayoff.md`
+Deep RL and continuous action spaces are intentionally excluded to keep
+behavior analyzable and results reproducible.
 
 ---
 
 ## Repository Structure
+
 ```
-├── README.md                     # Top-level overview (project roadmap & navigation)
+├── README.md                      # This file
 │
-├── README_SimplePayoff.md         # Stage 1: Single leader–follower, toy payoffs
-├── README_MARL.md                 # Stage 2: Multi-follower MARL with coalitions
-├── README_EconPayoff.md           # Stage 3: Economic Stackelberg model
+├── README_SimplePayoff.md         # Stage 1 documentation
+├── README_MARL.md                 # Stage 2 documentation
+├── README_EconPayoff.md           # Stage 3 documentation (IEEE CIFEr)
 │
-├── simple_payoff/
+├── simple_payoff/                 # Stage 1 — SCCUR 2025
 │   ├── stackelberg_q3_tariff_simplePayoff_sim.py
 │   ├── test_stackelberg_q3_tariff_simplePayoff.py
-│   └── plots/ 
+│   └── plots/
 │
-├── marl/
+├── marl/                          # Stage 2 — SCCUR 2025
 │   ├── stackelberg_q3_tariff_MultiFollower_sim.py
 │   ├── marl_q3_followers.py
 │   ├── test_multiagent_simplePayoff.py
 │   └── plots/
 │
-├── econ/
-│   ├── stackelberg_q3_tariff_econ_sim.py
-│   ├── test_stackelberg_q3_tariff_econ.py
-│   ├── plots/
+├── econ/                          # Stage 3 — IEEE CIFEr 2025
+│   ├── stackelberg_q3_tariff_econ_sim_v10_leaderDepr.py
+│   ├── stackelberg_q3_tariff_econ_config_v10.py
+│   ├── test_stackelberg_q3_tariff_econ_v10_leaderDepr.py
+│   ├── v11_pd_ieee_leaderDepr_PD.py
+│   ├── pd2_br_probe_grid_frozenQ.py
+│   ├── pd2_threshold_sensitivity.py
+│   ├── plot_pd2_boundary_fit.py
+│   └── phase_plots_v11_leaderDepr/
 │
 ├── pyproject.toml
 ├── .gitignore
 └── LICENSE
 ```
 
+---
 
+## Requirements
 
+```bash
+uv sync
+source .venv/bin/activate
+```
 
-## Future Directions
-
-Planned or conceptual extensions include:
-- Allowing followers to choose *both* depreciation and retaliatory tariffs
-- Adding export losses explicitly to the leader payoff
-- Multi-country follower blocs
-- Deep or recurrent RL for longer-horizon memory
-
-These are intentionally separated from the current codebase to keep each stage focused.
+- Python 3.10+
+- NumPy, Matplotlib, SciPy
+- No deep learning frameworks required
 
 ---
 
