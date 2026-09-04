@@ -11,7 +11,7 @@
 #   + _transition() now accepts (tau, d, rho) and mean-reverts E
 #   + leader_period_payoff_with_components() returns export_loss as 5th component
 #   + follower_period_payoff_with_components(d, rho) returns rho_cost as 5th component
-#   + Optional spite term: beta_E * (E0 - E) in follower payoff (default beta_E=0.0)
+#   + Optional spite term: beta_E * (tau/tau_max) * (E0 - E) in follower payoff (normalised; default beta_E=0.0)
 #   + evaluate_follower_payoff(tau, d, rho) updated signature
 #   + step(tau, d, rho) updated signature
 #
@@ -35,7 +35,7 @@
 # Phase 3B — StackelbergTariffGameEconomic:
 #   + step() unpacks (d_t, rho_t) from follower
 #   + Passes rho_t to env.step(), leader.update()
-#   + Logs 'rho', 'E', 'export_loss', 'rho_cost' in results
+#   + Logs 'rho', 'E', 'export_loss', 'rho_cost', 'spite_term' in results
 #
 # Unchanged from v1:
 #   - Inflation cost form: phi * d * M0  (kept as-is, v1 convention)
@@ -77,7 +77,7 @@ class EconomicParams:
     psi_E: float = 1.0           # V2: weight on export-loss term in leader payoff
     rho_max: float = 0.35        # V2: max retaliatory tariff follower can impose (mirrors tau_max)
     follower_cost_rho: float = 0.0  # V2: quadratic cost c_rho for follower using retaliation
-    beta_E: float = 0.0          # V2: spite term — direct follower utility from (E0-E); default=0 (instrumental only)
+    beta_E: float = 0.0          # V2: normalised spite — beta_E*(tau/tau_max)*(E0-E); max spite when τ=τ_max; default=0
 
 
 # ============================================================
@@ -150,7 +150,8 @@ class EconomicEnvironment:
         return L, rev, cons_loss, action_cost_L, export_loss
 
     # V2: follower payoff takes rho, computes rho_cost and optional spite term
-    def follower_period_payoff_with_components(self, d: float, rho: float = 0.0):
+    def follower_period_payoff_with_components(self, d: float, rho: float = 0.0,
+                                               tau: float = 0.0):
         """Follower per-period payoff decomposition.
         Components (unchanged from v1):
           export_gain  = X - X0
@@ -158,23 +159,25 @@ class EconomicEnvironment:
           action_cost_F= follower_cost_w * d^2
         New in V2:
           rho_cost     = follower_cost_rho * rho^2   [quadratic WTO/diplomatic friction]
-          spite_term   = beta_E * (E0 - E)            [optional; default beta_E=0.0]
+          spite_term   = beta_E * (tau/tau_max) * (E0 - E)   [normalised τ/τ_max scaled;
+                         grievance proportional to tariff saturation; default beta_E=0.0 → inactive]
         Total: F = export_gain - infl_cost - action_cost_F - rho_cost + spite_term
         """
         export_gain   = (self.X - self.p.X0)
         infl_cost     = self.p.phi_inflation * d * self.p.M0
         action_cost_F = self.p.follower_cost_w * (d ** 2)
         rho_cost      = self.p.follower_cost_rho * (rho ** 2)              # V2
-        spite_term    = self.p.beta_E * max(0.0, self.p.E0 - self.E)      # V2 (0 by default)
+        tau_frac      = tau / self.p.tau_max if self.p.tau_max > 0 else 0.0  # V2 normalised
+        spite_term    = self.p.beta_E * tau_frac * max(0.0, self.p.E0 - self.E)  # V2 τ/τ_max scaled
         F = export_gain - infl_cost - action_cost_F - rho_cost + spite_term  # V2 updated
-        return F, export_gain, infl_cost, action_cost_F, rho_cost
+        return F, export_gain, infl_cost, action_cost_F, rho_cost, spite_term
 
     # V2: step now takes rho and propagates to transition and payoffs
     def step(self, tau: float, d: float, rho: float = 0.0):
         L, rev, cons_loss, action_cost_L, export_loss = \
             self.leader_period_payoff_with_components(tau)
-        F, export_gain, infl_cost, action_cost_F, rho_cost = \
-            self.follower_period_payoff_with_components(d, rho)
+        F, export_gain, infl_cost, action_cost_F, rho_cost, spite_term = \
+            self.follower_period_payoff_with_components(d, rho, tau)
         self._transition(tau, d, rho)                                       # V2 passes rho
         diag = {
             "M": self.M, "X": self.X,
@@ -184,6 +187,7 @@ class EconomicEnvironment:
             "export_gain": export_gain, "infl_cost": infl_cost,
             "action_cost_F": action_cost_F,
             "rho_cost": rho_cost,                                           # V2
+            "spite_term": spite_term,                                        # V2 tau-scaled
         }
         return L, F, diag
 
@@ -197,11 +201,11 @@ class EconomicEnvironment:
         prev_bak = getattr(self, "prev_X", self.X)
         try:
             if timing == "pre":
-                F, *_ = self.follower_period_payoff_with_components(d, rho)
+                F, *_ = self.follower_period_payoff_with_components(d, rho, tau)
                 return F
             elif timing == "post":
                 self._transition(tau, d, rho)                               # V2 passes rho
-                F, *_ = self.follower_period_payoff_with_components(d, rho)
+                F, *_ = self.follower_period_payoff_with_components(d, rho, tau)
                 return F
             else:
                 raise ValueError("timing must be 'pre' or 'post'")
@@ -586,7 +590,7 @@ class Q3BinnedFollower:
 #   - step() unpacks (d_t, rho_t) from follower.respond()
 #   - Passes rho_t to env.step() and leader.update()
 #   - Handles deferred follower update with rho propagation
-#   - Logs 'rho', 'E', 'export_loss', 'rho_cost'
+#   - Logs 'rho', 'E', 'export_loss', 'rho_cost', 'spite_term'
 # ============================================================
 class StackelbergTariffGameEconomic:
     def __init__(self, env: EconomicEnvironment, leader, follower, track: bool = True):
@@ -671,4 +675,5 @@ class StackelbergTariffGameEconomic:
                 "infl_cost":    diag.get("infl_cost"),
                 "action_cost_F":diag.get("action_cost_F"),
                 "rho_cost":     diag.get("rho_cost"),                      # V2
+                "spite_term":   diag.get("spite_term"),                      # V2 tau-scaled
             })

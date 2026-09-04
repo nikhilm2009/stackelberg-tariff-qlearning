@@ -152,22 +152,22 @@ def prepare_q_heatmap(agent, actions_sorted=None, top_k=50):
 # Configurable experiment block
 # -----------------------------
 # Leader-favoring scenario (U.S. advantage)
-#def build_params(tau_max=0.35, d_max=0.25, trade_form="linear"):
-#    return EconomicParams(
-#        trade_form="power",
-#        M0=450.0,
-#        X0=500.0,
-#        demand_elast=1.10,   # ↓ sensitivity → τ hurts M less → stronger tariff revenue
-#        supply_elast=0.90,   # ↓ export response to d → follower gains less
-#        kappa=0.35,          # ↓ M adjusts slower → revenue persists
-#        lam=0.40,            # ↓ X adjusts slower → follower gains slower
-#        delta=0.98,
-#        phi_inflation=0.35,  # ↑ imported-inflation penalty → discourages d
-#        leader_cost_w=0.008, # ↓ softer tariff cost
-#        follower_cost_w=0.010,# ↑ heavier depreciation/admin cost
-#        tau_max=0.35,        # moderate tariff headroom
-#        d_max=0.18           # ↓ caps follower’s depreciation
-#    )
+def build_params(tau_max=0.35, d_max=0.25, trade_form="linear"):
+   return EconomicParams(
+       trade_form="power",
+       M0=450.0,
+       X0=500.0,
+       demand_elast=1.10,   # ↓ sensitivity → τ hurts M less → stronger tariff revenue
+       supply_elast=0.90,   # ↓ export response to d → follower gains less
+       kappa=0.35,          # ↓ M adjusts slower → revenue persists
+       lam=0.40,            # ↓ X adjusts slower → follower gains slower
+       delta=0.98,
+       phi_inflation=0.35,  # ↑ imported-inflation penalty → discourages d
+       leader_cost_w=0.008, # ↓ softer tariff cost
+       follower_cost_w=0.010,# ↑ heavier depreciation/admin cost
+       tau_max=0.35,        # moderate tariff headroom
+       d_max=0.18           # ↓ caps follower’s depreciation
+   )
 
 # Follower-favoring scenario (China/India advantage)
 def build_params(tau_max=0.35, d_max=0.25, trade_form="linear"):
